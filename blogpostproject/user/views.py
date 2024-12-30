@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth.models import User
+from .models import User
 from django.contrib.auth import logout, authenticate
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -16,13 +16,30 @@ class SignUpView(APIView):
             username = request.data.get('username')
             password = request.data.get('password')
             email = request.data.get('email')
-            # print(request.data)
+            posts = request.data.get('posts')
+            topics = request.data.get('topics')
+            imageURL = request.data.get('imageURL')
+            print(f"Request data: {request.data}")
+            print(f"Posts: {posts}, Topics: {topics}, ImageURL: {imageURL}")
+
 
             if not username or not password:
                 return Response({'error': 'Username and password are required'}, status=status.HTTP_400_BAD_REQUEST)
 
-            user = User.objects.create_user(username=username, password=password, email=email)
+            user = User.objects.create_user(
+                username=username,
+                password=password,
+                email=email,
+                imageURL=imageURL
+            )
             user.save()
+
+            # Assign Many-to-Many fields using set()
+            if posts:
+                user.posts.set(posts)
+            if topics:
+                user.topics.set(topics)
+                
             serializer = UserSerializer(user)
             return Response({'message': 'User created successfully -backend', 'user': serializer.data}, status=status.HTTP_201_CREATED)
         except Exception as e:
@@ -30,9 +47,12 @@ class SignUpView(APIView):
             return Response({'error': 'Failed to create user'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class LoginView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
+        print("Request data:", request.data)
         username = request.data.get('username')
         password = request.data.get('password')
+        print(f"Username: {username}, Password: {password}")
         
         print(request.data)
         
@@ -40,6 +60,7 @@ class LoginView(APIView):
             return Response({'error': 'Username and password are required'}, status=status.HTTP_400_BAD_REQUEST)
         
         user = authenticate(request, username=username, password=password)
+        print("Authenticated user:", user)
         if user:
             # Generate the token for the user
             token, created = Token.objects.get_or_create(user=user)

@@ -10,7 +10,7 @@ services:
     environment:
       - PG_USER=postgres
       - PG_PASSWORD=postgres
-      - PG_DB=postgres
+      - PG_DB=blogpost
       - PG_HOST=database
       - PG_PORT=5432
     depends_on:

@@ -8,7 +8,7 @@ from .models import BlogTopic
 class BlogTopicSerializer(serializers.ModelSerializer):
     title = models.CharField(max_length=255)
     author = UserSerializer(read_only=True)
-    posts = serializers.PrimaryKeyRelatedField(many=True, queryset=BlogPost.objects.all())
+    posts = serializers.PrimaryKeyRelatedField(many=True, queryset=BlogPost.objects.all(), required=False)
     
     class Meta:
         model = BlogTopic
