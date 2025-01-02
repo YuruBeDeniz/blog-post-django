@@ -22,7 +22,6 @@ class SignUpView(APIView):
             if not username or not password:
                 return Response({'error': 'Username and password are required'}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Create the user
             user = User.objects.create_user(
                 username=username,
                 password=password,
