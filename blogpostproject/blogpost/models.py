@@ -25,8 +25,7 @@ class BlogPost(models.Model):
         'blogtopic.BlogTopic', 
         related_name='blog_posts_topic', 
         on_delete=models.CASCADE, 
-        null=True,  
-        blank=True 
+        default=get_default_topic
     )
 
     def __str__(self):

@@ -16,16 +16,13 @@ class SignUpView(APIView):
             username = request.data.get('username')
             password = request.data.get('password')
             email = request.data.get('email')
-            posts = request.data.get('posts')
-            topics = request.data.get('topics')
             imageURL = request.data.get('imageURL')
             print(f"Request data: {request.data}")
-            print(f"Posts: {posts}, Topics: {topics}, ImageURL: {imageURL}")
-
 
             if not username or not password:
                 return Response({'error': 'Username and password are required'}, status=status.HTTP_400_BAD_REQUEST)
 
+            # Create the user
             user = User.objects.create_user(
                 username=username,
                 password=password,
@@ -34,11 +31,6 @@ class SignUpView(APIView):
             )
             user.save()
 
-            # Assign Many-to-Many fields using set()
-            if posts:
-                user.posts.set(posts)
-            if topics:
-                user.topics.set(topics)
                 
             serializer = UserSerializer(user)
             return Response({'message': 'User created successfully -backend', 'user': serializer.data}, status=status.HTTP_201_CREATED)

@@ -4,8 +4,6 @@ from django.db import models
 class User(AbstractUser):
     email = models.EmailField(unique=True)
     imageURL = models.URLField(max_length=500, blank=True, null=True)
-    posts = models.ManyToManyField('blogpost.BlogPost', related_name='user_blog_posts', blank=True)
-    topics = models.ManyToManyField('blogtopic.BlogTopic', related_name='user_blog_topics', blank=True)
 
     groups = models.ManyToManyField(
         'auth.Group',

@@ -7,11 +7,10 @@ class SimplifiedBlogTopicSerializer(serializers.Serializer):
         
 class BlogTopicSerializer(serializers.ModelSerializer):
     author = serializers.SerializerMethodField()
-    posts = serializers.SerializerMethodField()
 
     class Meta:
         model = BlogTopic
-        fields = ['id', 'title', 'author', 'posts']
+        fields = ['id', 'title', 'author']
 
     def get_author(self, obj):
         from user.serializers import SimplifiedUserSerializer
