@@ -10,6 +10,13 @@ class BlogPostListCreateView(generics.ListCreateAPIView):
     queryset = BlogPost.objects.all()
     serializer_class = BlogPostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        topic_id = self.request.query_params.get('topic', None)
+        if topic_id:
+            queryset = queryset.filter(topic_id=topic_id)
+        return queryset
 
     def perform_create(self, serializer):
         # Automatically assign the logged-in user as the author

@@ -1,15 +1,23 @@
 from rest_framework import serializers
-from django.db import models
-
-from blogpost.models import BlogPost
-from user.serializers import UserSerializer
 from .models import BlogTopic
 
+class SimplifiedBlogTopicSerializer(serializers.Serializer):
+    title = serializers.CharField()
+
+        
 class BlogTopicSerializer(serializers.ModelSerializer):
-    title = models.CharField(max_length=255)
-    author = UserSerializer(read_only=True)
-    posts = serializers.PrimaryKeyRelatedField(many=True, queryset=BlogPost.objects.all(), required=False)
-    
+    author = serializers.SerializerMethodField()
+    posts = serializers.SerializerMethodField()
+
     class Meta:
         model = BlogTopic
         fields = ['id', 'title', 'author', 'posts']
+
+    def get_author(self, obj):
+        from user.serializers import SimplifiedUserSerializer
+        return SimplifiedUserSerializer(obj.author).data
+
+    def get_posts(self, obj):
+        from blogpost.serializers import SimplifiedBlogPostSerializer
+        return SimplifiedBlogPostSerializer(obj.posts.all(), many=True).data
+        

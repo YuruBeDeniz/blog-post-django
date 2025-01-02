@@ -15,7 +15,7 @@ class BlogTopic(models.Model):
         on_delete=models.CASCADE, 
         default=get_default_user
     )
-    posts = models.ManyToManyField('blogpost.BlogPost', related_name='blog_topics_posts', blank=True)
+    posts = models.ManyToManyField('blogpost.BlogPost', related_name='blog_topics_posts')
 
     def __str__(self):
         return self.title

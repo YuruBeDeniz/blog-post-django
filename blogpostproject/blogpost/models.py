@@ -17,7 +17,7 @@ class BlogPost(models.Model):
         on_delete=models.CASCADE, 
         default=get_default_user
     )
-    topic = models.ForeignKey('blogtopic.BlogTopic', related_name='blog_posts_topic', on_delete=models.CASCADE)
+    topic = models.ForeignKey('blogtopic.BlogTopic', related_name='blog_posts_topic', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return f"Post by {self.author.username} on {self.topic.title}"
