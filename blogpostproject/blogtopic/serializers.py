@@ -13,8 +13,8 @@ class BlogTopicSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'author']
 
     def get_author(self, obj):
-        from user.serializers import SimplifiedUserSerializer
-        return SimplifiedUserSerializer(obj.author).data
+        from user.serializers import UserSerializer
+        return UserSerializer(obj.author).data
 
     def get_posts(self, obj):
         from blogpost.serializers import SimplifiedBlogPostSerializer
