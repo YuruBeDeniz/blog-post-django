@@ -21,3 +21,6 @@ class BlogPostSerializer(serializers.ModelSerializer):
     def get_author(self, obj):
         from user.serializers import SimplifiedUserSerializer
         return SimplifiedUserSerializer(obj.author).data    
+    
+# to work around circular import problem, the imports are moved inside functions    
+# https://stackoverflow.com/questions/33413523/circular-dependency-in-django-rest-framework-serializers

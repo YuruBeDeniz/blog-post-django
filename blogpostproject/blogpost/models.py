@@ -31,3 +31,10 @@ class BlogPost(models.Model):
     def __str__(self):
         return f"Post by {self.author.username} on {self.topic.title}"
 
+# related_name='blog_posts_topic' creates a reverse relationship. 
+# This allows you to access all posts for a specific topic using
+# topic.blog_posts_topic.all()
+
+# If you don’t specify a related_name, 
+# Django automatically generates a name based on the model name:
+# blogpost_set: Example: topic.blogpost_set.all()

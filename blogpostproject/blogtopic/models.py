@@ -18,4 +18,7 @@ class BlogTopic(models.Model):
 
     def __str__(self):
         return self.title
-    
+
+# a topic has a list of posts. it is not initialized here
+# because it is redundant. a post has corresponding topic_id 
+# that is enough for creating the relation.    
