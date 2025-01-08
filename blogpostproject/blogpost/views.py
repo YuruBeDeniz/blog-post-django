@@ -6,6 +6,7 @@ from rest_framework import serializers
 from blogtopic.models import BlogTopic
 from .models import BlogPost
 from .serializers import BlogPostSerializer
+from .permissions import IsAdminUserOrReadOnly, IsAuthorOrAdmin
 
 import logging
 
@@ -15,20 +16,18 @@ logger = logging.getLogger('django')
 class BlogPostListCreateView(generics.ListCreateAPIView):
     queryset = BlogPost.objects.all()
     serializer_class = BlogPostSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsAuthorOrAdmin]
     
     def get_queryset(self):
         queryset = super().get_queryset()
         topic_id = self.request.query_params.get('topic', None)
         print("self.request", self.request)
-        print("self.request.query_params", self.request.query_params)
-        print(f"Received topic_id: {topic_id}")
         if topic_id:
             queryset = queryset.filter(topic_id=topic_id)
         return queryset
     
     def get(self, request, *args, **kwargs):
-        logger.info(f"Headers: {request.headers}")  # Log headers
+        logger.info(f"Headers: {request.headers}")
         logger.info(f"Request User: {request.user}, Is Authenticated: {request.user.is_authenticated}")
         return super().get(request, *args, **kwargs)
 
@@ -50,17 +49,20 @@ class BlogPostListCreateView(generics.ListCreateAPIView):
 class BlogPostDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = BlogPost.objects.all()
     serializer_class = BlogPostSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsAuthorOrAdmin]
 
     def perform_update(self, serializer):
         # Prevent unauthorized users from updating
-        if self.get_object().author != self.request.user:
+        # Check if the user is an admin or the author of the post
+        if not (self.get_object().author == self.request.user or 
+                self.request.user.groups.filter(name='Admin').exists()):
             raise PermissionDenied("You do not have permission to edit this post.")
         serializer.save()
 
     def perform_destroy(self, instance):
         # Prevent unauthorized users from deleting
-        if instance.author != self.request.user:
+        if not (instance.author == self.request.user or 
+                self.request.user.groups.filter(name='Admin').exists()):
             raise PermissionDenied("You do not have permission to delete this post.")
         instance.delete()
 
