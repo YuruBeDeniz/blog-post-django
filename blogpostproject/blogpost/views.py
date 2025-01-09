@@ -6,7 +6,7 @@ from rest_framework import serializers
 from blogtopic.models import BlogTopic
 from .models import BlogPost
 from .serializers import BlogPostSerializer
-from .permissions import IsAdminUserOrReadOnly, IsAuthorOrAdmin
+from .permissions import IsAuthorOrAdmin
 
 import logging
 
