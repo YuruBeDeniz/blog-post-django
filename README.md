@@ -1,10 +1,18 @@
+# blog-post-django
+
+## docker commands
 docker volume inspect media
 
 docker exec -it blogpost_backend bash > 
 
+#### to open postgres terminal
+
 psql -h database -U postgres -d blogpost
 
-# blog-post-django
+#### to open django terminal
+
+python manage.py shell
+
 
 
 ## create the Default User
